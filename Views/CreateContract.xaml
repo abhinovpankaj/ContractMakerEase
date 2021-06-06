@@ -1,0 +1,175 @@
+<!--
+//*********************************************************
+//
+// Copyright (c) Microsoft. All rights reserved.
+// This code is licensed under the MIT License (MIT).
+// THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
+// ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
+// IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
+// PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
+//xmlns:sf="using:Syncfusion.UI.Xaml.RichTextBoxAdv"
+//*********************************************************
+-->
+
+<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DragAndDropSampleManaged"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:models="using:DragAndDropSampleManaged.Models" xmlns:viewmodels="using:DragAndDropSampleManaged.ViewModels"
+    x:Class="DragAndDropSampleManaged.CreateContract"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="ProjectTemplate" x:DataType="models:Project">
+            <TreeViewItem ItemsSource="{x:Bind Paragraphs}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="20" Source="Assets/drawing.png"/>
+                    <TextBlock Text="{x:Bind  Header}"  ToolTipService.ToolTip="{Binding Content}"/>
+                </StackPanel>
+            </TreeViewItem>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ParagraphTemplate" x:DataType="models:Paragraph">
+            <TreeViewItem>
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="20" Source="Assets/dropcursor.png"/>
+                    <TextBlock Text="{x:Bind Header}" ToolTipService.ToolTip="{Binding Content}"/>
+                </StackPanel>
+            </TreeViewItem>
+        </DataTemplate>
+        <DataTemplate x:Key="SubParagraphTemplate" x:DataType="models:SubParagraph">
+            <TreeViewItem>
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="20" Source="Assets/dropcursor.png"/>
+                    <TextBlock Text="{x:Bind Header}" ToolTipService.ToolTip="{Binding Content}"/>
+                </StackPanel>
+            </TreeViewItem>
+        </DataTemplate>
+        <viewmodels:NodeTemplateSelector
+            x:Key="NodeTemplateSelector"
+            ProjectTemplate="{StaticResource ProjectTemplate}"
+            SubParagraphTemplate="{StaticResource SubParagraphTemplate}"
+            ParagraphTemplate="{StaticResource ParagraphTemplate}" />
+    </Page.Resources>
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="DragDropGroup">
+                <VisualState x:Name="Outside"/>
+                <VisualState x:Name="Inside">
+                    <!--<VisualState.Setters>
+                        <Setter Target="TargetTextBox.(Control.Background).(SolidColorBrush.Color)" Value="LightGreen"/>
+                    </VisualState.Setters>-->
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".2*"/>
+            <ColumnDefinition Width=".6*"/>
+            <ColumnDefinition Width=".2*"/>
+
+        </Grid.ColumnDefinitions>
+        <controls:WrapPanel Grid.ColumnSpan="2">
+            <TextBlock Style="{StaticResource SampleHeaderTextStyle}"
+                       
+                       TextWrapping="Wrap" Text="Create contracts with Ease"/>
+            <Button     x:Uid="AddprojectButton"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        ToolTipService.ToolTip="Click to Add "
+                        Background="Transparent"
+                        
+                        Click="AddRoomButton_Click">
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock
+                                Margin="0,0,12,0"
+                                AutomationProperties.AccessibilityView="Raw"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="16"
+                                Text="&#xE710;" />
+                    <!--<TextBlock
+                                x:Uid="AddRoomButtonCaption"
+                                Margin="0,-2,0,0"
+                                VerticalAlignment="Top"
+                                AutomationProperties.AccessibilityView="Raw"
+                                FontSize="14" />-->
+                </StackPanel>
+            </Button>
+        </controls:WrapPanel>
+        <TreeView ItemsSource="{Binding Projects}" Grid.Row="1"
+                  ItemTemplateSelector="{StaticResource  NodeTemplateSelector}">
+            <!--<TreeView.ItemTemplate>
+                <DataTemplate x:DataType="models:Project">
+                    <TreeViewItem ItemsSource="{x:Bind Paragraphs}"
+                               Content="{x:Bind Header}"
+                                 />
+                </DataTemplate>
+            </TreeView.ItemTemplate>-->
+        </TreeView>
+
+        <controls:GridSplitter x:Name="RawListofConditions"
+            GripperCursor="Default"
+            HorizontalAlignment="Left"
+            Grid.Column="1"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            ResizeDirection="Auto"
+            CursorBehavior="ChangeOnSplitterHover"
+            Width="5">
+            <controls:GridSplitter.RenderTransform>
+                <TranslateTransform X="-8" />
+            </controls:GridSplitter.RenderTransform>
+
+        </controls:GridSplitter>
+        <controls:GridSplitter x:Name="ArrangedConditions"
+            GripperCursor="Default"
+            HorizontalAlignment="Left"
+            Grid.Column="2"
+            Grid.RowSpan="2"
+            ResizeDirection="Auto"
+             Grid.Row="1"
+            CursorBehavior="ChangeOnSplitterHover"
+            Width="12">
+            <controls:GridSplitter.RenderTransform>
+                <TranslateTransform X="-8" />
+            </controls:GridSplitter.RenderTransform>
+
+        </controls:GridSplitter>
+        <Grid  Grid.Column="2" Margin="10,5"
+               Background="OliveDrab"
+               Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <controls:GridSplitter x:Name="gridforEditing"
+                Grid.Row="1"
+                Grid.RowSpan="2"
+                ResizeDirection="Auto"
+                VerticalAlignment="Top"
+                
+                Height="5">
+                <controls:GridSplitter.RenderTransform>
+                    <TranslateTransform Y="-8" />
+                </controls:GridSplitter.RenderTransform>
+                <controls:GridSplitter.Element>
+                    <TextBlock HorizontalAlignment="Center"
+                         IsHitTestVisible="False"
+                         VerticalAlignment="Center"
+                         Text="&#xE76F;"
+                         Foreground="White"
+                         FontFamily="Segoe MDL2 Assets"/>
+                </controls:GridSplitter.Element>
+            </controls:GridSplitter>
+            </Grid>
+        
+
+    </Grid>
+</Page>
