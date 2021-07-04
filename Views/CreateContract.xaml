@@ -18,32 +18,123 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+     
     xmlns:models="using:DragAndDropSampleManaged.Models" xmlns:viewmodels="using:DragAndDropSampleManaged.ViewModels"
     x:Class="DragAndDropSampleManaged.CreateContract"
     mc:Ignorable="d">
     <Page.Resources>
+        <!--<Style TargetType="TextBlock" >
+            <Setter Property="Height" Value="280"/>
+        </Style>-->
+        <Style TargetType="TreeViewItem" x:Key="expanderstyle">
+                <Setter Property="CollapsedGlyph" Value="&#xE948;"/>
+                <Setter Property="ExpandedGlyph" Value="&#xE949;"/>
+                <Setter Property="GlyphBrush" Value="DarkOrange"/>
+            </Style>
+        <Style TargetType="TreeViewItem" x:Key="draggedexpanderstyle">
+            <Setter Property="IsExpanded" Value="True"/>
+            <Setter Property="CollapsedGlyph" Value="&#xEDDA;"/>
+            <Setter Property="ExpandedGlyph" Value="&#xEDDC;"/>
+            <Setter Property="GlyphBrush" Value="White"/>
+        </Style>
+        <DataTemplate x:Key="DraggedProjectTemplate" x:DataType="models:Project">
+            <TreeViewItem ItemsSource="{x:Bind Paragraphs}" AllowDrop="False" Margin="5,5,5,5" 
+                          Style="{StaticResource draggedexpanderstyle}"  >
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Padding="2" Background="DarkViolet"    
+                    
+                    Width="340" HorizontalAlignment="Left">
+                        <Image Width="40" Source="../Assets/drawing.png" Margin="5"/>
+                        <TextBlock Text="{x:Bind Header}" Foreground="White"  Margin="5" 
+                       Style="{StaticResource FlyoutPickerTitleTextBlockStyle }" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Width="340" Background="RosyBrown" HorizontalAlignment="Left"
+                                Visibility="{Binding ElementName=SourceTCs, Path=DataContext.ShowDetails}">
+                       
+                        <TextBlock Text="{x:Bind Content}" 
+                   Padding="5" TextWrapping="Wrap" Style="{StaticResource BodyTextBlockStyle}"
+                   Margin="0"/>
+                    </StackPanel>
+
+
+
+                </StackPanel>
+
+            </TreeViewItem>
+        </DataTemplate>
         <DataTemplate x:Key="ProjectTemplate" x:DataType="models:Project">
-            <TreeViewItem ItemsSource="{x:Bind Paragraphs}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="20" Source="Assets/drawing.png"/>
+            <TreeViewItem ItemsSource="{x:Bind Paragraphs}" AllowDrop="False" Style="{StaticResource expanderstyle}"  >
+                <StackPanel Orientation="Horizontal" Padding="4">
+                    <Image Width="20" Source="../Assets/drawing.png"/>
                     <TextBlock Text="{x:Bind  Header}"  ToolTipService.ToolTip="{Binding Content}"/>
                 </StackPanel>
+                
             </TreeViewItem>
         </DataTemplate>
+        <DataTemplate x:Key="DraggedParagraphTemplate" x:DataType="models:Paragraph"  >
+            <TreeViewItem ItemsSource="{x:Bind SubParagraphs}" AllowDrop="False" 
+                          Style="{StaticResource draggedexpanderstyle}" Margin="5">
+                <StackPanel Margin="20,0,0,0" >
+                    <StackPanel Orientation="Horizontal" Padding="2" Background="MediumVioletRed"
+                    
+                    Width="340" HorizontalAlignment="Left">
+                        <Image Width="25" Source="../Assets/drawing.png" Margin="5"/>
+                        <TextBlock Text="{x:Bind Header}" Foreground="White"  Margin="5" 
+                       VerticalAlignment="Center"
+                       Style="{StaticResource BodyTextBlockStyle }"/>
+                    </StackPanel>
 
-        <DataTemplate x:Key="ParagraphTemplate" x:DataType="models:Paragraph">
-            <TreeViewItem>
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="20" Source="Assets/dropcursor.png"/>
+                    <StackPanel Width="340" Background="RosyBrown" HorizontalAlignment="Left"
+                                Visibility="{Binding ElementName=SourceTCs, Path=DataContext.ShowDetails}">
+                        <TextBlock Text="{x:Bind Content}"
+                   Padding="5" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}"
+                   Margin="0"/>
+                    </StackPanel>
+
+
+
+                </StackPanel>
+            </TreeViewItem>
+        </DataTemplate>
+        <DataTemplate x:Key="ParagraphTemplate" x:DataType="models:Paragraph"  >
+            <TreeViewItem ItemsSource="{x:Bind SubParagraphs}" AllowDrop="False">
+                <StackPanel Orientation="Horizontal" Style="{StaticResource expanderstyle}" >
+                    <Image Width="20" Source="../Assets/dropcursor.png"/>
+                    <TextBlock Text="{x:Bind Header}" ToolTipService.ToolTip="{Binding Content}"/>
+                </StackPanel>
+                
+            </TreeViewItem>
+        </DataTemplate>
+        <DataTemplate x:Key="SubParagraphTemplate" x:DataType="models:SubParagraph" >
+            <TreeViewItem  AllowDrop="False" Style="{StaticResource expanderstyle}" >
+                <StackPanel Orientation="Horizontal" >
+                    <Image Width="20" Source="../Assets/subPara.png"/>
                     <TextBlock Text="{x:Bind Header}" ToolTipService.ToolTip="{Binding Content}"/>
                 </StackPanel>
             </TreeViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="SubParagraphTemplate" x:DataType="models:SubParagraph">
-            <TreeViewItem>
-                <StackPanel Orientation="Horizontal">
-                    <Image Width="20" Source="Assets/dropcursor.png"/>
-                    <TextBlock Text="{x:Bind Header}" ToolTipService.ToolTip="{Binding Content}"/>
+        <DataTemplate x:Key="DraggedSubParagraphTemplate" x:DataType="models:SubParagraph" >
+            <TreeViewItem  AllowDrop="False" Style="{StaticResource draggedexpanderstyle}" Margin="20,5,5,5">
+                <StackPanel Margin="30,0,0,0">
+                    <StackPanel Orientation="Horizontal" Padding="2" Background="PaleVioletRed"
+                    
+                    Width="340" HorizontalAlignment="Left">
+                        <Image Width="15" Source="../Assets/subPara.png" Margin="5"/>
+                        <TextBlock Text="{x:Bind Header}" Foreground="White"  Margin="5" 
+                       VerticalAlignment="Center"
+                       Style="{StaticResource BodyTextBlockStyle }"/>
+                    </StackPanel>
+
+                    <StackPanel Width="340" Background="RosyBrown" HorizontalAlignment="Left"
+                                Visibility="{Binding ElementName=SourceTCs, Path=DataContext.ShowDetails}">
+                        <TextBlock Text="{x:Bind Content}"
+                   Padding="5" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}"
+                   Margin="0"/>
+                    </StackPanel>
+
+
+
                 </StackPanel>
             </TreeViewItem>
         </DataTemplate>
@@ -51,10 +142,17 @@
             x:Key="NodeTemplateSelector"
             ProjectTemplate="{StaticResource ProjectTemplate}"
             SubParagraphTemplate="{StaticResource SubParagraphTemplate}"
-            ParagraphTemplate="{StaticResource ParagraphTemplate}" />
+            ParagraphTemplate="{StaticResource ParagraphTemplate}"
+            />
+        <viewmodels:DraggedNodeTemplateSelector
+            x:Key="DraggedNodeTemplateSelector"
+            ProjectTemplate="{StaticResource  DraggedProjectTemplate}"
+            SubParagraphTemplate="{StaticResource DraggedSubParagraphTemplate}"
+            ParagraphTemplate="{StaticResource DraggedParagraphTemplate}"
+            />
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="DragDropGroup">
                 <VisualState x:Name="Outside"/>
@@ -85,14 +183,15 @@
                         VerticalAlignment="Center"
                         ToolTipService.ToolTip="Click to Add "
                         Background="Transparent"
-                        
+                        BorderBrush="Transparent"
                         Click="AddRoomButton_Click">
-                <StackPanel Orientation="Horizontal" >
+                
                     <TextBlock
-                                Margin="0,0,12,0"
+                                Margin="0,0,0,0"
+                        FontWeight="ExtraBold"
                                 AutomationProperties.AccessibilityView="Raw"
                                 FontFamily="Segoe MDL2 Assets"
-                                FontSize="16"
+                                FontSize="18"
                                 Text="&#xE710;" />
                     <!--<TextBlock
                                 x:Uid="AddRoomButtonCaption"
@@ -100,19 +199,41 @@
                                 VerticalAlignment="Top"
                                 AutomationProperties.AccessibilityView="Raw"
                                 FontSize="14" />-->
-                </StackPanel>
+                
             </Button>
+            <ToggleSwitch x:Name="toggleDetails" OnContent="Hide Details" 
+                          IsOn="{Binding IsOn, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                          OffContent="Show Details" Margin="100,0,0,0"/>
         </controls:WrapPanel>
-        <TreeView ItemsSource="{Binding Projects}" Grid.Row="1"
+        <StackPanel Grid.Row="1">
+            <TreeView ItemsSource="{Binding Projects}" Background="Aqua" 
+                      x:Name="sourceTCs"
+                      AllowDrop="False"
+                      CanDragItems="True"
+                      CanReorderItems="False"
+                      ItemInvoked="SourceTCs_ItemInvoked"
+                      DragItemsStarting="SourceTCs_DragItemsStarting"
+                      ItemTemplateSelector="{StaticResource  NodeTemplateSelector}">
+                
+            </TreeView>
+            <TreeView ItemsSource="{Binding IndependentSubGraphs}" 
+                      AllowDrop="False"
+                      ItemInvoked="SourceTCs_ItemInvoked"
+                      CanDragItems="True"
+                      DragItemsStarting="SourceTCs_DragItemsStarting"
+                      CanReorderItems="False"
                   ItemTemplateSelector="{StaticResource  NodeTemplateSelector}">
-            <!--<TreeView.ItemTemplate>
+                <!--<TreeView.ItemTemplate>
                 <DataTemplate x:DataType="models:Project">
                     <TreeViewItem ItemsSource="{x:Bind Paragraphs}"
                                Content="{x:Bind Header}"
                                  />
                 </DataTemplate>
             </TreeView.ItemTemplate>-->
-        </TreeView>
+
+            </TreeView>
+        </StackPanel>
+        
 
         <controls:GridSplitter x:Name="RawListofConditions"
             GripperCursor="Default"
@@ -128,6 +249,17 @@
             </controls:GridSplitter.RenderTransform>
 
         </controls:GridSplitter>
+        
+        <TreeView Grid.Column="1" Grid.RowSpan="2"
+                  Margin="10,60,10,10" 
+                  
+                  ItemsSource="{Binding ArrangedContracts}" 
+                  ItemTemplateSelector="{StaticResource  DraggedNodeTemplateSelector}"
+                  x:Name="TcTargetlayout"
+                  Background="Azure"
+                  AllowDrop="True"
+                  DragOver="TcTargetlayout_DragOver"
+                  Drop="TcTargetlayout_Drop"></TreeView>
         <controls:GridSplitter x:Name="ArrangedConditions"
             GripperCursor="Default"
             HorizontalAlignment="Left"
@@ -143,10 +275,10 @@
 
         </controls:GridSplitter>
         <Grid  Grid.Column="2" Margin="10,5"
-               Background="OliveDrab"
+               local:GridLines.AreVisible="True"
                Grid.RowSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" MinHeight="300"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <controls:GridSplitter x:Name="gridforEditing"
@@ -168,7 +300,62 @@
                          FontFamily="Segoe MDL2 Assets"/>
                 </controls:GridSplitter.Element>
             </controls:GridSplitter>
+            
+            <Border BorderBrush="SaddleBrown" BorderThickness="1"
+                    Margin="0,5,5,10">
+                <Border.Resources>
+                    <Storyboard x:Name="myStoryboard">
+                        <DoubleAnimation From="150" To="0" Duration="00:00:1" 
+                Storyboard.TargetName="TCTextBlock" 
+                Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
+                            <DoubleAnimation.EasingFunction>
+                                <PowerEase  EasingMode="EaseInOut" 
+                                />
+                            </DoubleAnimation.EasingFunction>
+                        </DoubleAnimation>
+                        <!--<DoubleAnimation
+                            Storyboard.TargetName="TCTextBlock" 
+            Storyboard.TargetProperty="(TextBlock.Opacity)"
+            From="1.0" To="0.0" Duration="0:0:5">
+                        </DoubleAnimation>-->
+                    </Storyboard>
+                </Border.Resources>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Padding="2" Background="Brown"                   
+                                 HorizontalAlignment="Stretch">
+                        <SymbolIcon Symbol="Bullets" Margin="5" Foreground="White"/>
+                        <TextBlock Text="Details" Foreground="White"  Margin="5" 
+                       VerticalAlignment="Center"
+                       Style="{StaticResource FlyoutPickerTitleTextBlockStyle }"/>
+                    </StackPanel>
+                    <TextBlock Margin="5" 
+                           x:Name="TCTextBlock"                
+                    HorizontalAlignment="Stretch"
+                       TextWrapping="WrapWholeWords"
+                     VerticalAlignment="Stretch">
+                        <TextBlock.RenderTransform>
+                            <CompositeTransform/>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+                </StackPanel>
+                
+            </Border>
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <controls:TextToolbar x:Name="Toolbar" Editor="{x:Bind textEditor}" >
+                    
+                    <!--<controls:TextToolbar.CustomButtons>
+                        
+                    </controls:TextToolbar.CustomButtons>-->
+                </controls:TextToolbar>
+                
+                <RichEditBox x:Name="textEditor" PlaceholderText="Enter Text Here"  Grid.Row="1"/>
             </Grid>
+            
+        </Grid>
         
 
     </Grid>

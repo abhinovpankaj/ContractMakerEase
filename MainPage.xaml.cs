@@ -57,7 +57,7 @@ namespace DragAndDropSampleManaged
             }
             else
             {
-                ScenarioControl.SelectedIndex = 0;
+                ScenarioControl.SelectedIndex = 1;
             }
         }
 

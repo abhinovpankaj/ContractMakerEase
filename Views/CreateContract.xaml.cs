@@ -19,6 +19,12 @@ using Windows.UI.Xaml;
 using Windows.ApplicationModel.DataTransfer;
 using System.Collections.ObjectModel;
 using DragAndDropSampleManaged.ViewModels;
+using System.Text;
+using DragAndDropSampleManaged.Models;
+using System.Linq;
+using Windows.Storage.Streams;
+using Windows.Storage;
+using System.IO;
 
 namespace DragAndDropSampleManaged
 {
@@ -117,8 +123,108 @@ namespace DragAndDropSampleManaged
 
         }
 
+        private Project draggedProject;
+        private Paragraph draggedPara;
+
+        private SubParagraph draggedSubPara;
+
+        private void SourceTCs_DragItemsStarting(TreeView sender, TreeViewDragItemsStartingEventArgs e)
+        {
+            string items = string.Empty;
+            foreach (var item in e.Items)
+            {
+                if (item is Project)
+                {
+                    draggedProject = item as Project;
+                    items = string.Join(",", e.Items.Cast<Project>().Select(i => i.TnCId));
+                    e.Data.SetText(items.ToString());
+                    
+                }
+                else if (item is Paragraph)
+                {
+                    draggedPara = item as Paragraph;
+                    items = string.Join(",", e.Items.Cast<Paragraph>().Select(i => i.TnCId));
+                    e.Data.SetText(items.ToString());
+                }
+                else if (item is SubParagraph)
+                {
+                    draggedSubPara = item as SubParagraph;
+                    items = string.Join(",", e.Items.Cast<SubParagraph>().Select(i => i.TnCId));
+                    e.Data.SetText(items.ToString());
+                }
+            }
+            
+            e.Data.RequestedOperation = DataPackageOperation.Move;
+            //Windows.Storage.Streams.RandomAccessStreamReference img =  Windows.Storage.Streams.RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/dropcursor.png", UriKind.RelativeOrAbsolute));
+
+            //e.Data.SetBitmap(img);
+            e.Data.RequestedOperation = DataPackageOperation.Move;
+        }
+
+        private void TcTargetlayout_DragOver(object sender, DragEventArgs e)
+        {
+
+            e.AcceptedOperation = (e.DataView.Contains(StandardDataFormats.Text)) ? DataPackageOperation.Move : DataPackageOperation.None;
+        }
+
+        private async void TcTargetlayout_Drop(object sender, DragEventArgs e)
+        {
+            //var droppedProject = await e.DataView.GetDataAsync("Project");
+            //var droppedPara = await e.DataView.GetDataAsync("Paragraph");
+            //var droppedSubPara = await e.DataView.GetDataAsync("SubParagraph");
+
+            if (e.DataView.Contains(StandardDataFormats.Text))
+            {
+                var id = await e.DataView.GetTextAsync();
+                var itemIdsToMove = id.Split(',');
+
+                var destinationTreeView = sender as TreeView;
+                var treeViewItemsSource = destinationTreeView?.ItemsSource as ObservableCollection<Project>;
+
+                if (treeViewItemsSource != null)
+                {
+                    //foreach (var itemId in itemIdsToMove)
+                    //{
+                    //    var itemToMove = this..First(i => i.Id.ToString() == itemId);
+
+                    //    listViewItemsSource.Add(itemToMove);
+                    //    this.MyItems.Remove(itemToMove);
+                    //}
+                    if (draggedProject!=null)
+                    {
+                        treeViewItemsSource.Add(draggedProject);
+
+                        string str = await ContractDocCreator.CreateNewDoc(treeViewItemsSource.ToList());
+                        //// Load the file into the Document property of the RichEditBox.
+                        textEditor.Document.SetText(Windows.UI.Text.TextSetOptions.FormatRtf,str);
+                    }
+                    if (draggedPara!=null)
+                    {
+                        if (treeViewItemsSource.Count>0)
+                        {
+                            
+                        }
+                        
+                    }
+                    if (draggedSubPara!=null)
+                    {
+
+                    }
+                }
+            }
+
+
+        }
+
+        private void SourceTCs_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
+        {
+            var node = args.InvokedItem as TermAndCondition;
+            TCTextBlock.Text = node.Content;
+            myStoryboard.Begin();
+        }
+
         /// <summary>
-        /// Drop: restore the background and append the dragged text
+        /// Drop: restore the background and append the dragged textWindows.UI.Xaml.Controls.TreeView
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>

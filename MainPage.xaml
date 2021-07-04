@@ -13,14 +13,17 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <SplitView x:Name="Splitter" IsPaneOpen="True" Grid.Row="1" DisplayMode="Inline">
+        <SplitView x:Name="Splitter" IsPaneOpen="False" Grid.Row="1" DisplayMode="Inline">
             <SplitView.Pane>
                 <RelativePanel Margin="10,0,0,0">
                     <TextBlock x:Name="SampleTitle" Text="Sample Title Here" Style="{StaticResource SampleHeaderTextStyle}" TextWrapping="Wrap" Margin="0,10,0,0"/>
                     <!-- Provide an AutomationProperties.Name for a list to a screen reader. A shipping app would localize this. -->
-                    <ListBox x:Name="ScenarioControl" SelectionChanged="ScenarioControl_SelectionChanged" AutomationProperties.Name="Scenarios"
+                    <ListBox x:Name="ScenarioControl" 
+                             SelectionChanged="ScenarioControl_SelectionChanged"
+                             AutomationProperties.Name="Scenarios"
                  SelectionMode="Single" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0"
-                 VerticalAlignment="Top" RelativePanel.Below="SampleTitle" Margin="0,10,0,0" RelativePanel.Above="FooterPanel">
+                 VerticalAlignment="Top" RelativePanel.Below="SampleTitle" Margin="0,10,0,0" 
+                             RelativePanel.Above="FooterPanel">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="local:Scenario">
                                 <TextBlock Text="{x:Bind Title}"/>
@@ -55,19 +58,24 @@
                 </StackPanel>
             </RelativePanel>
         </SplitView>
-        <StackPanel x:Name="HeaderPanel" Orientation="Horizontal">
-            <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Grid.Row="0">
-                <ToggleButton Style="{StaticResource SymbolButton}" Click="Button_Click" VerticalAlignment="Top" Foreground="{ThemeResource ApplicationForegroundThemeBrush}">
+        <StackPanel x:Name="HeaderPanel" Orientation="Horizontal"
+                    VerticalAlignment="Center">
+            <Border Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" >
+                <ToggleButton Style="{StaticResource SymbolButton}" Click="Button_Click" 
+                              VerticalAlignment="Center" 
+                              Foreground="{ThemeResource ApplicationForegroundThemeBrush}">
                     <ToggleButton.Content>
-                        <FontIcon x:Name="Hamburger" FontFamily="Segoe MDL2 Assets" Glyph="&#xE700;" Margin="0,10,0,0"/>
+                        <FontIcon x:Name="Hamburger" VerticalAlignment="Center" FontFamily="Segoe MDL2 Assets" 
+                                  Glyph="&#xE700;" Margin="10"/>
                     </ToggleButton.Content>
+                   
                 </ToggleButton>
             </Border>
             <!-- Use AutomationProperties.AccessibilityView to let a screen reader know that the image is purely decorative.
                  (If the Image conveyed useful information we'd not use AccessibilityView, but instead provide a localized 
                  name for the Image to convey its purpose.) -->
             <Image x:Name="WindowsLogo" 
-                   Stretch="None" Source="media/windows-sdk.png" Margin="15"
+                   Stretch="None" Source="media/windows-sdk.png" Margin="15,10  "
                    VerticalAlignment="Center"
                    AutomationProperties.AccessibilityView="Raw" />
             <TextBlock x:Name="Header" Text="CONTRACT EASE" Style="{StaticResource TagLineTextStyle}" Margin="0,15,0,0" />

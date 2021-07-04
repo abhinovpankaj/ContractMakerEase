@@ -1,0 +1,31 @@
+﻿<Page
+    x:Class="DragAndDropSampleManaged.ParaControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DragAndDropSampleManaged"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    
+    <StackPanel Margin="30,0,0,0">
+        <StackPanel Orientation="Horizontal" Padding="2" Background="Brown"
+                    
+                    Width="340" HorizontalAlignment="Left">
+            <Image Width="15" Source="../Assets/subPara.png" Margin="5"/>
+            <TextBlock Text="Test Text" Foreground="White"  Margin="5" 
+                       VerticalAlignment="Center"
+                       Style="{StaticResource FlyoutPickerTitleTextBlockStyle }"/>
+        </StackPanel>
+
+        <StackPanel Width="340" Background="RosyBrown" HorizontalAlignment="Left" Opacity=".8">
+            <TextBlock Text="afklnakfnsjkdfnkjsnkjsfklsdfsdlkfnslkfnsdkfnksnfksdfksnfksnkfsd askfnkafnksnfksdfnkjs sdfksdifsf asfisf kniasfojfs asififnksfnsa amsfkafn"
+                   Padding="5" TextWrapping="Wrap" Style="{StaticResource CopyrightTextStyle}"
+                   Margin="0"/>
+        </StackPanel>
+            
+       
+        
+    </StackPanel>
+
+</Page>

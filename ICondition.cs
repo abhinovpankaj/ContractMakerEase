@@ -11,4 +11,9 @@ namespace DragAndDropSampleManaged
     {
         Guid ParentId { get; set; }
     }
+
+    public interface IContractDocument
+    {
+        void CreateDocument();
+    }
 }

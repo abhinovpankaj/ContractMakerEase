@@ -32,4 +32,28 @@ namespace DragAndDropSampleManaged.ViewModels
 
         }
     }
+
+    public class DraggedNodeTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate ProjectTemplate { get; set; }
+        public DataTemplate ParagraphTemplate { get; set; }
+        public DataTemplate SubParagraphTemplate { get; set; }
+        protected override DataTemplate SelectTemplateCore(object item)
+        {
+            var explorerItem = (TermAndCondition)item;
+            switch (explorerItem.Type)
+            {
+                case NodeItemType.Project:
+                    return ProjectTemplate;
+                case NodeItemType.Paragraph:
+                    return ParagraphTemplate;
+                case NodeItemType.SubParagraph:
+                    return SubParagraphTemplate;
+                default:
+                    return SubParagraphTemplate;
+            }
+
+
+        }
+    }
 }

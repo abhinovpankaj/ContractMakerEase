@@ -15,7 +15,14 @@ namespace DragAndDropSampleManaged.Models
         public Guid TnCId { get; set; }= new Guid();
 
         public NodeItemType Type { get; set; }
+
+        public Dictionary<string,string> InputFields { get; set; }
         public Guid ParentId
-        { get; set; } 
+        { get; set; }
+
+        public override string ToString()
+        {
+            return Header;
+        }
     }
 }
