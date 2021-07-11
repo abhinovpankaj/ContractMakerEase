@@ -30,37 +30,57 @@
                 <Setter Property="CollapsedGlyph" Value="&#xE948;"/>
                 <Setter Property="ExpandedGlyph" Value="&#xE949;"/>
                 <Setter Property="GlyphBrush" Value="DarkOrange"/>
+            
             </Style>
         <Style TargetType="TreeViewItem" x:Key="draggedexpanderstyle">
             <Setter Property="IsExpanded" Value="True"/>
             <Setter Property="CollapsedGlyph" Value="&#xEDDA;"/>
             <Setter Property="ExpandedGlyph" Value="&#xEDDC;"/>
             <Setter Property="GlyphBrush" Value="White"/>
+            <Setter Property="GlyphSize" Value="15"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
         <DataTemplate x:Key="DraggedProjectTemplate" x:DataType="models:Project">
             <TreeViewItem ItemsSource="{x:Bind Paragraphs}" AllowDrop="False" Margin="5,5,5,5" 
                           Style="{StaticResource draggedexpanderstyle}"  >
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal" Padding="2" Background="DarkViolet"    
+                    <Grid Width="400" Background="DarkViolet">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
                     
-                    Width="340" HorizontalAlignment="Left">
-                        <Image Width="40" Source="../Assets/drawing.png" Margin="5"/>
+                        <Image Width="40" Source="../Assets/drawing.png" Margin="5"
+                               HorizontalAlignment="Left"/>
                         <TextBlock Text="{x:Bind Header}" Foreground="White"  Margin="5" 
+                                   Grid.Column="1"
+                                   HorizontalAlignment="Left"
                        Style="{StaticResource FlyoutPickerTitleTextBlockStyle }" VerticalAlignment="Center"/>
-                    </StackPanel>
+                        <Button Grid.Column="2" CornerRadius="30"  HorizontalAlignment="Right"
+                                Margin="0,0,10,0"
+                    Padding="0" HorizontalContentAlignment="Center" Command="{Binding RemoveCommand}"
+                    Height="35" Width="35" Background="Transparent" BorderBrush="White">
+                            <SymbolIcon Symbol="Delete" Foreground="White" Height="20"
+                         />
+                        </Button>
+                    </Grid>
 
-                    <StackPanel Width="340" Background="RosyBrown" HorizontalAlignment="Left"
+
+                    <StackPanel Width="400" Background="RosyBrown" HorizontalAlignment="Left"
+                                Grid.Row="1"
                                 Visibility="{Binding ElementName=SourceTCs, Path=DataContext.ShowDetails}">
                        
                         <TextBlock Text="{x:Bind Content}" 
                    Padding="5" TextWrapping="Wrap" Style="{StaticResource BodyTextBlockStyle}"
+                                   Height="100"
                    Margin="0"/>
                     </StackPanel>
 
 
 
+                
                 </StackPanel>
-
             </TreeViewItem>
         </DataTemplate>
         <DataTemplate x:Key="ProjectTemplate" x:DataType="models:Project">
@@ -73,22 +93,35 @@
             </TreeViewItem>
         </DataTemplate>
         <DataTemplate x:Key="DraggedParagraphTemplate" x:DataType="models:Paragraph"  >
-            <TreeViewItem ItemsSource="{x:Bind SubParagraphs}" AllowDrop="False" 
-                          Style="{StaticResource draggedexpanderstyle}" Margin="5">
+            <TreeViewItem ItemsSource="{x:Bind SubParagraphs}" AllowDrop="False" Padding="0"
+                          Style="{StaticResource draggedexpanderstyle}" Margin="10,2,2,2">
                 <StackPanel Margin="20,0,0,0" >
-                    <StackPanel Orientation="Horizontal" Padding="2" Background="MediumVioletRed"
-                    
-                    Width="340" HorizontalAlignment="Left">
-                        <Image Width="25" Source="../Assets/drawing.png" Margin="5"/>
+                    <Grid Width="400" Background="MediumVioletRed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition  Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Image Width="25" Source="../Assets/drawing.png" Margin="5"
+                               HorizontalAlignment="Left"/>
                         <TextBlock Text="{x:Bind Header}" Foreground="White"  Margin="5" 
-                       VerticalAlignment="Center"
-                       Style="{StaticResource BodyTextBlockStyle }"/>
-                    </StackPanel>
+                                   VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"
+                                   Style="{StaticResource BodyTextBlockStyle }"/>
+                        <Button Grid.Column="2" CornerRadius="30"  HorizontalAlignment="Right"
+                                Margin="0,5,10,5"
+                                Padding="0" HorizontalContentAlignment="Center" Command="{Binding RemoveCommand}"
+                                Height="30" Width="30" Background="Transparent" BorderBrush="White">
+                            <SymbolIcon Symbol="Delete" Foreground="White" Height="20"
+                         />
+                        </Button>
 
-                    <StackPanel Width="340" Background="RosyBrown" HorizontalAlignment="Left"
+                    </Grid>
+
+                    <StackPanel Width="400" Background="RosyBrown" HorizontalAlignment="Left"
                                 Visibility="{Binding ElementName=SourceTCs, Path=DataContext.ShowDetails}">
                         <TextBlock Text="{x:Bind Content}"
                    Padding="5" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Height="100"
                    Margin="0"/>
                     </StackPanel>
 
@@ -117,18 +150,30 @@
         <DataTemplate x:Key="DraggedSubParagraphTemplate" x:DataType="models:SubParagraph" >
             <TreeViewItem  AllowDrop="False" Style="{StaticResource draggedexpanderstyle}" Margin="20,5,5,5">
                 <StackPanel Margin="30,0,0,0">
-                    <StackPanel Orientation="Horizontal" Padding="2" Background="PaleVioletRed"
-                    
-                    Width="340" HorizontalAlignment="Left">
-                        <Image Width="15" Source="../Assets/subPara.png" Margin="5"/>
+                    <Grid Width="400" Background="PaleVioletRed">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition  Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Image Width="15" Source="../Assets/subPara.png" Margin="5"
+                               HorizontalAlignment="Left"/>
                         <TextBlock Text="{x:Bind Header}" Foreground="White"  Margin="5" 
-                       VerticalAlignment="Center"
+                       VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Column="1"
                        Style="{StaticResource BodyTextBlockStyle }"/>
-                    </StackPanel>
+                        <Button Grid.Column="2" CornerRadius="30"  HorizontalAlignment="Right"
+                                Margin="0,5,10,5"
+                    Padding="0" HorizontalContentAlignment="Center" Command="{Binding RemoveCommand}"
+                    Height="30" Width="30" Background="Transparent" BorderBrush="White">
+                            <SymbolIcon Symbol="Delete" Foreground="White" Height="20"
+                         />
+                        </Button>
 
-                    <StackPanel Width="340" Background="RosyBrown" HorizontalAlignment="Left"
+                    </Grid  >
+
+                    <StackPanel Width="400" Background="RosyBrown" HorizontalAlignment="Left"
                                 Visibility="{Binding ElementName=SourceTCs, Path=DataContext.ShowDetails}">
-                        <TextBlock Text="{x:Bind Content}"
+                        <TextBlock Text="{x:Bind Content}" Height="100"
                    Padding="5" TextWrapping="Wrap" Style="{StaticResource CaptionTextBlockStyle}"
                    Margin="0"/>
                     </StackPanel>
@@ -219,6 +264,7 @@
             <TreeView ItemsSource="{Binding IndependentSubGraphs}" 
                       AllowDrop="False"
                       ItemInvoked="SourceTCs_ItemInvoked"
+                      RightTapped="TreeView_RightTapped"
                       CanDragItems="True"
                       DragItemsStarting="SourceTCs_DragItemsStarting"
                       CanReorderItems="False"
@@ -249,8 +295,17 @@
             </controls:GridSplitter.RenderTransform>
 
         </controls:GridSplitter>
-        
-        <TreeView Grid.Column="1" Grid.RowSpan="2"
+        <Canvas Grid.Column="1" Grid.RowSpan="2"
+                Margin="10,60,10,10" 
+                x:Name="TcTargetlayout"
+                Background="Azure"
+                AllowDrop="True"
+                PointerMoved="TcTargetlayout_PointerMoved"
+                DragOver="TcTargetlayout_DragOver"
+                PointerReleased="TcTargetlayout_PointerReleased"
+                Drop="TcTargetlayout_Drop"/>
+
+        <!--<TreeView Grid.Column="1" Grid.RowSpan="2"
                   Margin="10,60,10,10" 
                   
                   ItemsSource="{Binding ArrangedContracts}" 
@@ -259,7 +314,7 @@
                   Background="Azure"
                   AllowDrop="True"
                   DragOver="TcTargetlayout_DragOver"
-                  Drop="TcTargetlayout_Drop"></TreeView>
+                  Drop="TcTargetlayout_Drop"></TreeView>-->
         <controls:GridSplitter x:Name="ArrangedConditions"
             GripperCursor="Default"
             HorizontalAlignment="Left"
@@ -352,7 +407,8 @@
                     </controls:TextToolbar.CustomButtons>-->
                 </controls:TextToolbar>
                 
-                <RichEditBox x:Name="textEditor" PlaceholderText="Enter Text Here"  Grid.Row="1"/>
+                <RichEditBox x:Name="textEditor" PlaceholderText="Enter Text Here"  Grid.Row="1"
+                             Background="White" Foreground="Red"/>
             </Grid>
             
         </Grid>

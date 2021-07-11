@@ -1,5 +1,6 @@
 ﻿using DragAndDropSampleManaged.Models;
 using GalaSoft.MvvmLight;
+using GalaSoft.MvvmLight.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -52,6 +53,38 @@ namespace DragAndDropSampleManaged.ViewModels
         public CreateContractViewModel()
         {
             GetData();
+            Messenger.Default.Register<Guid>(this, DeleteNode);
+        }
+
+        
+        private void DeleteNode(Guid obj)
+        {
+            //TODO
+            return; //Need to work on this 
+            var tobeDeleted=ArrangedContracts.FirstOrDefault(x => x.TnCId == obj);
+            if (tobeDeleted!=null)
+            {
+                ArrangedContracts.Remove(tobeDeleted);
+            }
+            foreach (var item in ArrangedContracts)
+            {
+                var delPara = item.Paragraphs.FirstOrDefault(x => x.TnCId == obj);
+                if (delPara != null)
+                {
+                    item.Paragraphs.Remove(delPara);
+                }
+                foreach (var para in item.Paragraphs)
+                {
+                    var delSubPara = para.SubParagraphs.FirstOrDefault(x => x.TnCId == obj);
+                    if (delSubPara != null)
+                    {
+                        para.SubParagraphs.Remove(delSubPara);
+                    }
+                }
+            }
+           
+           
+           
         }
 
         public ObservableCollection<Project> ArrangedContracts { get; set; }
@@ -85,51 +118,51 @@ namespace DragAndDropSampleManaged.ViewModels
                                 Content = "  2: Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
                                 Type = NodeItemType.SubParagraph,
                             },
-                            new SubParagraph()
-                            {
-                                Header = "WW SubPara 3:Sub Para spec",
-                                Content = "3 : Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
-                                Type = NodeItemType.SubParagraph,
-                            }
+                            //new SubParagraph()
+                            //{
+                            //    Header = "WW SubPara 3:Sub Para spec",
+                            //    Content = "3 : Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
+                            //    Type = NodeItemType.SubParagraph,
+                            //}
                         }
                     },
-                    new Paragraph()
-                    {
-                        Header = "WW Para 2: Visual Specifications",
-                        Type = NodeItemType.Paragraph,
-                        Content = "Generating are used to generate a random number in C#. The StringBuilder class and the NextDouble() method in the Random class are used to generate a random string.",
-                        SubParagraphs = new List<SubParagraph>()
-                        {
-                            new SubParagraph()
-                            {
-                                Header = "WW Subpara1: Sub Para spec1",
-                                Content = "1: Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
-                                Type = NodeItemType.SubParagraph,
-                            },
+                    //new Paragraph()
+                    //{
+                    //    Header = "WW Para 2: Visual Specifications",
+                    //    Type = NodeItemType.Paragraph,
+                    //    Content = "Generating are used to generate a random number in C#. The StringBuilder class and the NextDouble() method in the Random class are used to generate a random string.",
+                    //    SubParagraphs = new List<SubParagraph>()
+                    //    {
+                    //        new SubParagraph()
+                    //        {
+                    //            Header = "WW Subpara1: Sub Para spec1",
+                    //            Content = "1: Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
+                    //            Type = NodeItemType.SubParagraph,
+                    //        },
 
-                            new SubParagraph()
-                            {
-                                Header = "WW SubPara2: Sub Para spec 2",
-                                Content = "2: Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
-                                Type = NodeItemType.SubParagraph,
-                            }
-                        }
-                    },
-                    new Paragraph()
-                    {
-                        Header = "WW  Para 3: Other Specifications",
-                        Type = NodeItemType.Paragraph,
-                        Content = "Generating are used to generate a random number in C#. The StringBuilder class and the NextDouble() method in the Random class are used to generate a random string.",
-                        SubParagraphs = new List<SubParagraph>()
-                        {
-                            new SubParagraph()
-                            {
-                                Header = "WW Subpara1: Sub Para spec",
-                                Content = "Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
-                                Type = NodeItemType.SubParagraph,
-                            }
-                        }
-                    },
+                    //        new SubParagraph()
+                    //        {
+                    //            Header = "WW SubPara2: Sub Para spec 2",
+                    //            Content = "2: Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
+                    //            Type = NodeItemType.SubParagraph,
+                    //        }
+                    //    }
+                    //},
+                    //new Paragraph()
+                    //{
+                    //    Header = "WW  Para 3: Other Specifications",
+                    //    Type = NodeItemType.Paragraph,
+                    //    Content = "Generating are used to generate a random number in C#. The StringBuilder class and the NextDouble() method in the Random class are used to generate a random string.",
+                    //    SubParagraphs = new List<SubParagraph>()
+                    //    {
+                    //        new SubParagraph()
+                    //        {
+                    //            Header = "WW Subpara1: Sub Para spec",
+                    //            Content = "Use the Random.NextDouble() method to generate a float (flt) that is between 0.00.0 and 1.01.0 and is inclusive Multiply flt with 2525 and take the Floor of the result. This will return an integer(shift) that is between 00 and 2525 and is inclusive.",
+                    //            Type = NodeItemType.SubParagraph,
+                    //        }
+                    //    }
+                    //},
                     new Paragraph()
                     {
                         Header = "WW Para 4:Feature Schedule Sub",

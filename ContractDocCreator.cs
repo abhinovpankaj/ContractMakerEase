@@ -26,7 +26,7 @@ namespace DragAndDropSampleManaged
             {
                 // Create Document
                 using (WordprocessingDocument wordDocument =
-                    WordprocessingDocument.Create(mem, WordprocessingDocumentType.Document, true))
+                    WordprocessingDocument.Create(mem, WordprocessingDocumentType.Document,true))
                 {
                     // Add a main document part. 
                     MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
@@ -43,15 +43,15 @@ namespace DragAndDropSampleManaged
                     
                 }
                 mem.Seek(0, SeekOrigin.Begin);
-                var reader = new StreamReader(mem,Encoding.UTF8);
-                
+                var reader = new StreamReader(mem);
+                str= Encoding.ASCII.GetString(mem.ToArray());
                 str = await reader.ReadToEndAsync();
 
             }
             return str;
         }
 
-        private static Paragraph getProjectParagraph( Models.Project pr)
+        public static Paragraph getProjectParagraph( Models.Project pr)
         {
             Paragraph p = new Paragraph();
             if (applyJustification)
@@ -76,19 +76,19 @@ namespace DragAndDropSampleManaged
             RunProperties rp2 = new RunProperties();
             rp2.Bold = new Bold();
             // Always add properties first
-            r2.Append(rp2);
+            r2.AppendChild(rp2);
             Text t2 = new Text(pr.Header) { Space = SpaceProcessingModeValues.Preserve };
-            r2.Append(t2);
-
+            r2.AppendChild(t2);
+            r2.AppendChild(new Break());
             //Project Description
             Run r3 = new Run();
             
             Text t3 = new Text(pr.Content) { Space = SpaceProcessingModeValues.Preserve };
             r3.Append(t3);
             
-            p.ParagraphProperties = new ParagraphProperties(ppUnordered.OuterXml);
-            p.Append(r2);
-            p.Append(r3);
+            //p.ParagraphProperties = new ParagraphProperties(ppUnordered.OuterXml);
+            p.AppendChild(r2);
+            p.AppendChild(r3);
 
             return p;
         }
@@ -126,7 +126,7 @@ namespace DragAndDropSampleManaged
 
         }
 
-        private static void AddHeaderes(MainDocumentPart mainPart)
+        private static void AddHeaders(MainDocumentPart mainPart)
         {
             // Heading 1
             StyleRunProperties styleRunPropertiesH1 = new StyleRunProperties();
