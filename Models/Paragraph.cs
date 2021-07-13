@@ -10,5 +10,9 @@ namespace DragAndDropSampleManaged.Models
     {
         public List<SubParagraph> SubParagraphs { get; set; }
 
+        public Paragraph()
+        {
+            this.Type = NodeItemType.Paragraph;
+        }
     }
 }

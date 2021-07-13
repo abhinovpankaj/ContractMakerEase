@@ -47,7 +47,8 @@
                        Fill="Red" VerticalAlignment="Top">
 
             </Rectangle>
-            <TextBlock Text="This is small desciption of the project description.bjhggjgjgjgj"
+            
+            <TextBlock Text="This is small desciption of the project."
                        FontSize="7"
                        TextWrapping="Wrap"
                        Margin="2,15,0,5"
@@ -60,13 +61,24 @@
                      VerticalAlignment="Top"/>
             <TextBlock FontWeight="Bold"
                        Text="P"
+                       Width="20"
+                       Height="20"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
                        Margin="8,2"/>
             
             <Line X1="40" Y1="55" X2="40" Y2="60"
                   Stroke="Red"/>
             <Line X1="80" Y1="55" X2="80" Y2="60"
                   Stroke="Red"/>
-            
+            <Button Padding="0" Height="20"
+                    
+                    BorderThickness="0"
+                    Background="Transparent"
+                    VerticalAlignment="Bottom" Margin="2">
+                <TextBlock Text="+" Padding="0" 
+                           VerticalAlignment="Center"/>
+            </Button>
         </Grid>
     </Canvas>
     

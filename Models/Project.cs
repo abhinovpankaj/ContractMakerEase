@@ -10,8 +10,13 @@ namespace DragAndDropSampleManaged.Models
     {
         public List<Paragraph> Paragraphs { get; set; }
 
-        public List<SubParagraph> SubParagraphs { get; set; }
+        //public List<SubParagraph> SubParagraphs { get; set; }
 
         public Guid ProjectID { get; set; } = new Guid();
+
+        public Project()
+        {
+            this.Type = NodeItemType.Project;
+        }
     }
 }

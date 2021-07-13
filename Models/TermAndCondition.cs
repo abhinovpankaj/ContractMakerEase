@@ -14,6 +14,7 @@ namespace DragAndDropSampleManaged.Models
         {
             TnCId = Guid.NewGuid();
         }
+        public bool IsCollapsed { get; set; }
         public string Header { get; set; }
 
         public string Content { get; set; }

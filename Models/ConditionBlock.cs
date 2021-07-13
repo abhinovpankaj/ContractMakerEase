@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace DragAndDropSampleManaged.Models
 {
-    public class SubParagraph :TermAndCondition
+    public class ConditionBlock: TermAndCondition
     {
-        public SubParagraph()
-        {
-            this.Type = NodeItemType.SubParagraph;
-        }
+        
     }
 }

@@ -78,7 +78,8 @@ namespace DragAndDropSampleManaged
             rect.Width = 80;
             if (tag is Project)
             {
-                textType = "M";
+                textType = "M";              
+                //grid.Margin= new Windows.UI.Xaml.Thickness(0, 25, 0, 0);
             }
             else if (tag is Models.Paragraph)
             {
@@ -89,6 +90,8 @@ namespace DragAndDropSampleManaged
                 textType = "S";
             }
             rect.Fill = new SolidColorBrush(Colors.Red);
+            rect.Stroke = new SolidColorBrush(Colors.White);
+            rect.StrokeThickness = 2;
             rect.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
             grid.Children.Add(rect);
             
@@ -110,6 +113,8 @@ namespace DragAndDropSampleManaged
             typeText.Text = textType;
             var fWeight = new Windows.UI.Text.FontWeight();
             fWeight.Weight = 700;
+            typeText.Width = 20;
+            typeText.Height = 20;
             typeText.FontWeight = fWeight;
             typeText.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
             typeText.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;
@@ -121,7 +126,21 @@ namespace DragAndDropSampleManaged
             elipse.Margin = new Windows.UI.Xaml.Thickness(2);
             elipse.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
             elipse.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;
+            
             grid.Children.Add(elipse);
+
+            //Button btn = new Button();
+            //btn.Padding = new Windows.UI.Xaml.Thickness(0);
+            //btn.Height = 20 ;
+            //btn.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left;
+            //btn.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Bottom;
+            //btn.Background = new SolidColorBrush(Colors.Transparent);
+            //btn.Margin = new Windows.UI.Xaml.Thickness(3);
+
+            //TextBlock actionText = new TextBlock();
+            //actionText.Text = "+";
+            //actionText.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+            //btn.Content = actionText;
 
             Line L1 = new Line();
             L1.X1 = 27; L1.Y1 = 55; L1.X2 = 27; L1.Y2 = 60; L1.Stroke = new SolidColorBrush(Colors.Red);
@@ -130,15 +149,87 @@ namespace DragAndDropSampleManaged
             L2.X1 = 54; L2.Y1 = 55; L2.X2 = 54; L2.Y2 = 60; L2.Stroke = new SolidColorBrush(Colors.Red);
             grid.Children.Add(L1);
             grid.Children.Add(L2);
+            
 
             Canvas.SetLeft(grid, left);
             Canvas.SetTop(grid, top);
             grid.PointerPressed += PolyLine2_PointerPressed;
             grid.CanDrag = true;
             grid.Tag = tag;
+            grid.DoubleTapped += Grid_DoubleTapped;
             return grid;
 
         }
+        //TODO, logic is not full proof.
+        private void Grid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            //TODO, logic is not full proof.
+
+            
+            var proj = dragObject as Grid;
+            
+            int itemCount = 0;
+            Visibility visibility=Visibility.Collapsed;
+            if (proj != null)
+            {
+                TermAndCondition tc = proj.Tag as TermAndCondition;
+                visibility = !tc.IsCollapsed ? Visibility.Collapsed : Visibility.Visible;
+                tc.IsCollapsed = !tc.IsCollapsed;
+
+                for (int i = 0; i < TcTargetlayout.Children.Count; i++)
+                {
+
+                    var item = TcTargetlayout.Children[i] as Grid;
+                    if (item is Grid)
+                    {
+                        var left = Canvas.GetLeft(item as UIElement);
+                        var top = Canvas.GetTop(item as UIElement);
+                        if (absoluteLoc.Y < top)
+                        {
+                            var child = item.Tag as TermAndCondition;
+                            if (tc.TnCId == child.ParentId)
+                            {
+                                item.Visibility = visibility;
+                                itemCount++;
+                            }
+                        }
+
+                    }
+                }
+
+                for (int i = 0; i < TcTargetlayout.Children.Count; i++)
+                {
+
+                    var item = TcTargetlayout.Children[i];
+                    if (item is Grid)
+                    {
+                        var left = Canvas.GetLeft(item as UIElement);
+                        var top = Canvas.GetTop(item as UIElement);
+                        if (visibility == Visibility.Collapsed)
+                        {
+                            if (absoluteLoc.X - left >= 0 && absoluteLoc.X - left < 80 && top - absoluteLoc.Y > itemCount * 55)
+                            {
+                                Canvas.SetTop(item, top - itemCount * 55);
+                                System.Threading.Thread.Sleep(100);
+                            }
+                        }
+                        else
+                        {
+                            if (absoluteLoc.X - left >=0 && absoluteLoc.X - left < 75 && top - absoluteLoc.Y > 0)
+                            {
+                                Canvas.SetTop(item, top + itemCount * 55);
+                                System.Threading.Thread.Sleep(100);
+                            }
+
+                        }
+
+                    }
+                }
+            }
+
+        }
+
+
         private Rectangle GetRectangle(double top, double left, object tag)
         {
             var rect1 = new Rectangle();
@@ -322,78 +413,58 @@ namespace DragAndDropSampleManaged
                 var destinationTreeView = sender as TreeView;
                 var treeViewItemsSource = destinationTreeView?.ItemsSource as ObservableCollection<Project>;
 
-                //if (treeViewItemsSource != null)
-                //{
-                    //foreach (var itemId in itemIdsToMove)
-                    //{
-                    //    var itemToMove = this..First(i => i.Id.ToString() == itemId);
-
-                    //    listViewItemsSource.Add(itemToMove);
-                    //    this.MyItems.Remove(itemToMove);
-                    //}
-                    if (draggedProject!=null)
-                    {
-                        //treeViewItemsSource.Add(draggedProject);
-                        //CreateDoc(treeViewItemsSource.ToList());
-                        //Add rectangles 
-                        double top=25, left = 40;
-                        double height = 55;
-                        double width = 100;
-                        double indentation = 25;
+                if (draggedProject!=null)
+                {
+                    //treeViewItemsSource.Add(draggedProject);
+                    //CreateDoc(treeViewItemsSource.ToList());
+                    //Add rectangles 
+                    double top=25, left = 40;
+                    double height = 55;
+                    double width = 100;
+                    double indentation = 25;
 
                     var projRect = GetContractGrid(top, left, draggedProject);  // GetRectangle(top, left,draggedProject);
 
                     TcTargetlayout.Children.Add(projRect);
                     
                     left = 40;
-                            top = 80;
-                            foreach (var para in draggedProject.Paragraphs)
-                            {
-                                left = 60;
-                                var paraRect = GetContractGrid(top,left,para);
-                                
-                                top = top + 55;
-                                
-                                left = 60;
-                                        TcTargetlayout.Children.Add(paraRect);
+                    top = 80;
+                    foreach (var para in draggedProject.Paragraphs)
+                    {
+                        left = 68;
+                        var paraRect = GetContractGrid(top,left,para);                           
+                        top = top + 55;                               
+                        TcTargetlayout.Children.Add(paraRect);
                                 
                         if (para.SubParagraphs!=null)
-                                {
-                                    foreach (var subpara in para.SubParagraphs)
-                                    {
-                                        left = 80;
-
-                                var subParaRect = GetContractGrid(top, left,subpara);
-                                        top = top + 55;
-
-                                
-                                        //polyLine.Visibility = Visibility.Collapsed;
-                                        TcTargetlayout.Children.Add(subParaRect);
-                                        
-                                    }
-                                }
-                                
-                            }
-
-                        //}
-                        
-                        //polyLine.Stroke = new Brush();
-                        //polyLine.Fill = new Brush(0;)
-                        
-                    }
-                    if (draggedPara!=null)
-                    {
-                        if (treeViewItemsSource.Count>0)
                         {
-                            
+                            foreach (var subpara in para.SubParagraphs)
+                            {
+                                left = 95;
+                                var subParaRect = GetContractGrid(top, left,subpara);
+                                top = top + 55;                                
+                                //polyLine.Visibility = Visibility.Collapsed;
+                                TcTargetlayout.Children.Add(subParaRect);
+                                        
+                            }
                         }
-                        
+                                
                     }
-                    if (draggedSubPara!=null)
-                    {
 
+                }
+                if (draggedPara!=null)
+                {
+                    if (treeViewItemsSource.Count>0)
+                    {
+                            
                     }
-                //}
+                        
+                }
+                if (draggedSubPara!=null)
+                {
+
+                }
+                
             }
 
 
@@ -402,8 +473,8 @@ namespace DragAndDropSampleManaged
         Point offset;
         Pointer draggedObjectPointer;
         Point absoluteLoc;
-        
 
+        #region word processing
         private MemoryStream _Ms;
         private WordprocessingDocument _Wpd;
 
@@ -561,6 +632,8 @@ namespace DragAndDropSampleManaged
             }
             
         }
+
+        #endregion
         private void SourceTCs_ItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
         {
             var node = args.InvokedItem as TermAndCondition;
@@ -603,6 +676,7 @@ namespace DragAndDropSampleManaged
         
         private void TcTargetlayout_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
+            bool isALevelUp = false;
             
             if (draggedObjectPointer!=null)
             {
@@ -612,10 +686,14 @@ namespace DragAndDropSampleManaged
                     return;
                 }
                 TcTargetlayout.ReleasePointerCapture(draggedObjectPointer);
-                // var position = e.GetCurrentPoint(sender as UIElement);
+                var position = e.GetCurrentPoint(sender as UIElement);
                 // draggedItemLocation.X = position.Position.X-offset.X ;
                 // draggedItemLocation.Y = position.Position.Y-offset.Y ;
-
+                if (position.Position.X==offset.X+absoluteLoc.X && position.Position.Y == offset.Y + absoluteLoc.Y)
+                {
+                    this.dragObject = null;
+                    return;
+                }
                 
                 double sx1 = Convert.ToDouble(dragObject.GetValue(Canvas.LeftProperty));
                 double sy1 = Convert.ToDouble(dragObject.GetValue(Canvas.TopProperty));
@@ -627,7 +705,7 @@ namespace DragAndDropSampleManaged
                     {
                         double sx2 = Convert.ToDouble(item.GetValue(Canvas.LeftProperty));
                         double sy2 = Convert.ToDouble(item.GetValue(Canvas.TopProperty));
-                        if (sy1 - sy2<70 && sy1-sy2>55)
+                        if (sy1 - sy2<70 && sy1-sy2>45)
                         {                           
                             
                             double myLeft = Canvas.GetLeft(item);
@@ -636,11 +714,13 @@ namespace DragAndDropSampleManaged
                             {
                                 if (sx1- myLeft>25 && sx1 - myLeft < 55)
                                 {
-                                    myLeft = myLeft +30;
+                                    myLeft = myLeft +28;
+                                    isALevelUp = false;
                                 }
                                 if (sx1 - myLeft <- 25 && sx1 - myLeft >- 55)
                                 {
-                                    myLeft = myLeft - 30;
+                                    myLeft = myLeft - 28;
+                                    
                                 }
                                 if (sx1-myLeft<-55)
                                 {
@@ -653,10 +733,12 @@ namespace DragAndDropSampleManaged
                                 Canvas.SetLeft(dragObject, myLeft);
                                 Canvas.SetTop(dragObject, myTop+55);
 
-                                //change the type to the connected item.
-                                //var dragRect = dragObject as Rectangle;
-                                //dragRect.Tag = (item as Rectangle).Tag;
-                               // setColor(dragRect);
+                                //set parentid
+                                var dataObject = (dragObject  as Grid).Tag as TermAndCondition ;
+                                var parntObject = (item as Grid).Tag as TermAndCondition;
+
+                                dataObject.ParentId = parntObject.TnCId;
+
                                 ElementSoundPlayer.Play(ElementSoundKind.Show);
                                 int count = 0;
                                 foreach (var rect in connectedRects)
@@ -664,6 +746,9 @@ namespace DragAndDropSampleManaged
                                     count++;
                                     Canvas.SetLeft(rect, myLeft);
                                     Canvas.SetTop(rect,myTop + 55 * count);
+                                    dataObject = (rect as Grid).Tag as TermAndCondition;
+                                    parntObject = (item as Grid).Tag as TermAndCondition;
+                                    dataObject.ParentId = parntObject.TnCId;
 
                                 }
                                 break;
@@ -713,14 +798,14 @@ namespace DragAndDropSampleManaged
             double sx1 = Convert.ToDouble(dragObject.GetValue(Canvas.LeftProperty));
             double sy1 = Convert.ToDouble(dragObject.GetValue(Canvas.TopProperty));
             connectedRects.Add(dragObject as Grid);
-            for (int i = TcTargetlayout.Children.Count - 1; i >= 0; i--)
+            for (int i = 0; i < TcTargetlayout.Children.Count ; i++)
             {
 
                 var item = TcTargetlayout.Children[i];
                 if (item is Grid)
                 {
-                    if (sy1 < Convert.ToDouble((item.GetValue(Canvas.TopProperty)))
-                        && sx1 == Convert.ToDouble((item.GetValue(Canvas.LeftProperty))))
+                    double sy2 = Convert.ToDouble((item.GetValue(Canvas.TopProperty)));
+                    if (sy1<sy2&&sy2 - sy1<60 && sx1 == Convert.ToDouble((item.GetValue(Canvas.LeftProperty))))
                     {
                         connectedRects.Add(item as Grid);
                         sy1 = Convert.ToDouble((item.GetValue(Canvas.TopProperty)));

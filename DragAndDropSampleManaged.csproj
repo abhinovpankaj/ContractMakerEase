@@ -98,6 +98,7 @@
     </Compile>
     <Compile Include="AssemblyInfo.cs">
     </Compile>
+    <Compile Include="Models\ConditionBlock.cs" />
     <Compile Include="Models\NodeItemType.cs" />
     <Compile Include="Models\Paragraph.cs" />
     <Compile Include="Models\Project.cs" />
