@@ -39,6 +39,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Data;
 
 namespace DragAndDropSampleManaged
 {
@@ -70,10 +71,18 @@ namespace DragAndDropSampleManaged
         private Grid GetContractGrid(double top,double left,object tag)
         {
             string textType;
+            //var binding = new Binding()
+            //{
+            //    Path = new PropertyPath("TnCId"),
+            //    Source = (tag as TermAndCondition).TnCId
+            //}; 
+            
             Grid grid = new Grid();
+            
             grid.Height = 60;
             grid.Width = 80;
             Rectangle rect = new Rectangle();
+            
             rect.Height = 55;
             rect.Width = 80;
             if (tag is Project)
@@ -95,6 +104,7 @@ namespace DragAndDropSampleManaged
             rect.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
             grid.Children.Add(rect);
             
+            
             //TextBlock textBlock = new TextBlock();
             //textBlock.Text = (tag as TermAndCondition).Content;
             //textBlock.FontSize = 7;
@@ -104,13 +114,14 @@ namespace DragAndDropSampleManaged
             //grid.Children.Add(textBlock);
 
             TextBlock seqText = new TextBlock();
-            seqText.Text = "";           
+            seqText.Text = (tag as TermAndCondition).ParentId.ToString();           
             seqText.VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top;
             seqText.HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Right;
             grid.Children.Add(seqText);
 
             TextBlock typeText = new TextBlock();
             typeText.Text = textType;
+            
             var fWeight = new Windows.UI.Text.FontWeight();
             fWeight.Weight = 700;
             typeText.Width = 20;
@@ -165,7 +176,8 @@ namespace DragAndDropSampleManaged
         {
             //TODO, logic is not full proof.
 
-            
+            List<TermAndCondition> observedList = new List<TermAndCondition>();
+            List<TermAndCondition> observedList1 = new List<TermAndCondition>();
             var proj = dragObject as Grid;
             
             int itemCount = 0;
@@ -189,8 +201,27 @@ namespace DragAndDropSampleManaged
                             var child = item.Tag as TermAndCondition;
                             if (tc.TnCId == child.ParentId)
                             {
-                                item.Visibility = visibility;
+                                item.Visibility = visibility;                                
                                 itemCount++;
+                                observedList.Add(child);
+                            }
+                            foreach (var condition in observedList)
+                            {
+                                if (condition.TnCId==child.ParentId)
+                                {
+                                    item.Visibility = visibility;
+                                    itemCount++;
+                                    observedList1.Add(child);
+                                }
+                            }
+                            foreach (var condition1 in observedList1)
+                            {
+                                if (condition1.TnCId == child.ParentId)
+                                {
+                                    item.Visibility = visibility;
+                                    itemCount++;
+                                    
+                                }
                             }
                         }
 
@@ -218,7 +249,7 @@ namespace DragAndDropSampleManaged
                             if (absoluteLoc.X - left >=0 && absoluteLoc.X - left < 75 && top - absoluteLoc.Y > 0)
                             {
                                 Canvas.SetTop(item, top + itemCount * 55);
-                                System.Threading.Thread.Sleep(100);
+                                System.Threading.Thread.Sleep(200);
                             }
 
                         }
@@ -673,15 +704,35 @@ namespace DragAndDropSampleManaged
             }
         }
 
-        
+        private TermAndCondition getParent(double  myLeft )
+        {
+            double nearest = 20000;
+            TermAndCondition parent =null;
+            for (int j = 0; j < TcTargetlayout.Children.Count; j++)
+            {
+                var item1 = TcTargetlayout.Children[j];
+                if (item1 is Grid)
+                {
+                    if (Math.Abs(myLeft - Canvas.GetLeft(item1))<3)
+                    {
+                        if (Canvas.GetTop(item1) < nearest)
+                        {
+                            nearest = Canvas.GetTop(item1);
+                            parent = (item1 as Grid).Tag as TermAndCondition;
+                        }
+
+                    }
+                }
+            }
+            return parent;
+        }
+
         private void TcTargetlayout_PointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
-            bool isALevelUp = false;
-            
-            if (draggedObjectPointer!=null)
+            if (draggedObjectPointer != null)
             {
                 //Find other box nearby.
-                if (dragObject==null)
+                if (dragObject == null)
                 {
                     return;
                 }
@@ -689,15 +740,15 @@ namespace DragAndDropSampleManaged
                 var position = e.GetCurrentPoint(sender as UIElement);
                 // draggedItemLocation.X = position.Position.X-offset.X ;
                 // draggedItemLocation.Y = position.Position.Y-offset.Y ;
-                if (position.Position.X==offset.X+absoluteLoc.X && position.Position.Y == offset.Y + absoluteLoc.Y)
+                if (position.Position.X == offset.X + absoluteLoc.X && position.Position.Y == offset.Y + absoluteLoc.Y)
                 {
                     this.dragObject = null;
                     return;
                 }
-                
+
                 double sx1 = Convert.ToDouble(dragObject.GetValue(Canvas.LeftProperty));
                 double sy1 = Convert.ToDouble(dragObject.GetValue(Canvas.TopProperty));
-                for (int i = TcTargetlayout.Children.Count-1; i >= 0; i--)
+                for (int i = TcTargetlayout.Children.Count - 1; i >= 0; i--)
                 {
 
                     var item = TcTargetlayout.Children[i];
@@ -705,52 +756,70 @@ namespace DragAndDropSampleManaged
                     {
                         double sx2 = Convert.ToDouble(item.GetValue(Canvas.LeftProperty));
                         double sy2 = Convert.ToDouble(item.GetValue(Canvas.TopProperty));
-                        if (sy1 - sy2<70 && sy1-sy2>45)
-                        {                           
-                            
+                        //set parentid
+                        var dataObject = (dragObject as Grid).Tag as TermAndCondition;
+                        var parntObject = (item as Grid).Tag as TermAndCondition;
+
+                        if (sy1 - sy2 < 70 && sy1 - sy2 > 45)
+                        {
+
                             double myLeft = Canvas.GetLeft(item);
                             double myTop = Canvas.GetTop(item);
-                            if (overlap(sx1,sy1,100,55,sx2,sy2,100,55))
+                            if (overlap(sx1, sy1, 100, 55, sx2, sy2, 100, 55))
                             {
-                                if (sx1- myLeft>25 && sx1 - myLeft < 55)
+                                if (sx1 - myLeft > 25 && sx1 - myLeft < 55)
                                 {
-                                    myLeft = myLeft +28;
-                                    isALevelUp = false;
+                                    myLeft = myLeft + 28;
+                                    dataObject.ParentId = parntObject.TnCId;
+
                                 }
-                                if (sx1 - myLeft <- 25 && sx1 - myLeft >- 55)
+                                else if (sx1 - myLeft < -25 && sx1 - myLeft > -55)
                                 {
                                     myLeft = myLeft - 28;
-                                    
+                                    var parent = getParent(myLeft);
+                                    dataObject.ParentId = parent.ParentId;
+
                                 }
-                                if (sx1-myLeft<-55)
+                                else if (sx1-myLeft<-55)
                                 {
                                     myLeft = myLeft - 55;
+                                    var parent = getParent(myLeft);
+                                    dataObject.ParentId = parent.ParentId;
                                 }
                                 else if(sx1 - myLeft > 55)
+                                {
                                     myLeft = myLeft + 55;
+                                    dataObject.ParentId = parntObject.TnCId;
+                                }
+                                else
+                                {
+                                    var parent = getParent(myLeft);
+                                    dataObject.ParentId = parent.ParentId;
+                                }
 
                                 
                                 Canvas.SetLeft(dragObject, myLeft);
                                 Canvas.SetTop(dragObject, myTop+55);
 
                                 //set parentid
-                                var dataObject = (dragObject  as Grid).Tag as TermAndCondition ;
-                                var parntObject = (item as Grid).Tag as TermAndCondition;
-
-                                dataObject.ParentId = parntObject.TnCId;
-
+                                
                                 ElementSoundPlayer.Play(ElementSoundKind.Show);
                                 int count = 0;
-                                foreach (var rect in connectedRects)
+                                if (connectedRects.Count>1)
                                 {
-                                    count++;
-                                    Canvas.SetLeft(rect, myLeft);
-                                    Canvas.SetTop(rect,myTop + 55 * count);
-                                    dataObject = (rect as Grid).Tag as TermAndCondition;
-                                    parntObject = (item as Grid).Tag as TermAndCondition;
-                                    dataObject.ParentId = parntObject.TnCId;
+                                    foreach (var rect in connectedRects)
+                                    {
+                                        count++;
+                                        Canvas.SetLeft(rect, myLeft);
+                                        Canvas.SetTop(rect, myTop + 55 * count);
 
+                                        dataObject = (rect as Grid).Tag as TermAndCondition;
+                                        parntObject = (item as Grid).Tag as TermAndCondition;
+                                        dataObject.ParentId = parntObject.TnCId;
+
+                                    }
                                 }
+                                
                                 break;
                             }
                             
