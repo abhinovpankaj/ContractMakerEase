@@ -40,8 +40,8 @@
             <Setter Property="GlyphSize" Value="15"/>
             <Setter Property="Padding" Value="0"/>
         </Style>
-        <DataTemplate x:Key="DraggedProjectTemplate" x:DataType="models:Project">
-            <TreeViewItem ItemsSource="{x:Bind Paragraphs}" AllowDrop="False" Margin="5,5,5,5" 
+        <DataTemplate x:Key="DraggedProjectTemplate" x:DataType="models:TermAndCondition">
+            <TreeViewItem ItemsSource="{x:Bind Children}" AllowDrop="False" Margin="5,5,5,5" 
                           Style="{StaticResource draggedexpanderstyle}"  >
                 <StackPanel>
                     <Grid Width="400" Background="DarkViolet">
@@ -83,8 +83,8 @@
                 </StackPanel>
             </TreeViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="ProjectTemplate" x:DataType="models:Project">
-            <TreeViewItem ItemsSource="{x:Bind Paragraphs}" AllowDrop="False" Style="{StaticResource expanderstyle}"  >
+        <DataTemplate x:Key="ProjectTemplate" x:DataType="models:TermAndCondition">
+            <TreeViewItem ItemsSource="{x:Bind Children}" AllowDrop="False" Style="{StaticResource expanderstyle}"  >
                 <StackPanel Orientation="Horizontal" Padding="4">
                     <Image Width="20" Source="../Assets/drawing.png"/>
                     <TextBlock Text="{x:Bind  Header}"  ToolTipService.ToolTip="{Binding Content}"/>
@@ -92,8 +92,8 @@
                 
             </TreeViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="DraggedParagraphTemplate" x:DataType="models:Paragraph"  >
-            <TreeViewItem ItemsSource="{x:Bind SubParagraphs}" AllowDrop="False" Padding="0"
+        <DataTemplate x:Key="DraggedParagraphTemplate" x:DataType="models:TermAndCondition"  >
+            <TreeViewItem ItemsSource="{x:Bind Children}" AllowDrop="False" Padding="0"
                           Style="{StaticResource draggedexpanderstyle}" Margin="10,2,2,2">
                 <StackPanel Margin="20,0,0,0" >
                     <Grid Width="400" Background="MediumVioletRed">
@@ -130,8 +130,8 @@
                 </StackPanel>
             </TreeViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="ParagraphTemplate" x:DataType="models:Paragraph"  >
-            <TreeViewItem ItemsSource="{x:Bind SubParagraphs}" AllowDrop="False">
+        <DataTemplate x:Key="ParagraphTemplate" x:DataType="models:TermAndCondition"  >
+            <TreeViewItem ItemsSource="{x:Bind Children}" AllowDrop="False">
                 <StackPanel Orientation="Horizontal" Style="{StaticResource expanderstyle}" >
                     <Image Width="20" Source="../Assets/dropcursor.png"/>
                     <TextBlock Text="{x:Bind Header}" ToolTipService.ToolTip="{Binding Content}"/>
@@ -139,7 +139,7 @@
                 
             </TreeViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="SubParagraphTemplate" x:DataType="models:SubParagraph" >
+        <DataTemplate x:Key="SubParagraphTemplate" x:DataType="models:TermAndCondition" >
             <TreeViewItem  AllowDrop="False" Style="{StaticResource expanderstyle}" >
                 <StackPanel Orientation="Horizontal" >
                     <Image Width="20" Source="../Assets/subPara.png"/>
@@ -147,7 +147,7 @@
                 </StackPanel>
             </TreeViewItem>
         </DataTemplate>
-        <DataTemplate x:Key="DraggedSubParagraphTemplate" x:DataType="models:SubParagraph" >
+        <DataTemplate x:Key="DraggedSubParagraphTemplate" x:DataType="models:TermAndCondition" >
             <TreeViewItem  AllowDrop="False" Style="{StaticResource draggedexpanderstyle}" Margin="20,5,5,5">
                 <StackPanel Margin="30,0,0,0">
                     <Grid Width="400" Background="PaleVioletRed">
@@ -247,9 +247,11 @@
                                 FontSize="14" />-->
                 
             </Button>
-            <ToggleSwitch x:Name="toggleDetails" OnContent="Hide Details" 
-                          IsOn="{Binding IsOn, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
-                          OffContent="Show Details" Margin="100,0,0,0"/>
+            <Button x:Name="btnGenerateReport" BorderThickness="0" 
+                    Height="40"
+                    Click="BtnGenerateReport_Click"
+                    Content="Generate Document"
+                    Margin="100,5,0,0"/>
         </controls:WrapPanel>
         <StackPanel Grid.Row="1">
             <TreeView ItemsSource="{Binding Projects}" Background="Aqua" 

@@ -91,6 +91,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="ContractDocCreator.cs" />
+    <Compile Include="Converters\TermAndConditionNodeTyeConverter.cs" />
     <Compile Include="GridLines.cs" />
     <Compile Include="ICondition.cs" />
     <Compile Include="MainPage.xaml.cs">
@@ -105,6 +106,9 @@
     <Compile Include="Models\SubParagraph.cs" />
     <Compile Include="Models\TermAndCondition.cs" />
     <Compile Include="SampleConfiguration.cs" />
+    <Compile Include="UserControls\InputFieldContentDialog.xaml.cs">
+      <DependentUpon>InputFieldContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\CreateContractViewModel.cs" />
     <Compile Include="ViewModels\NodeTemplateSelector.cs" />
     <Compile Include="Views\AddTC.xaml.cs">
@@ -139,6 +143,10 @@
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="UserControls\InputFieldContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\ParaControl.xaml">
       <SubType>Designer</SubType>
