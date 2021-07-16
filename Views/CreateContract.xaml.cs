@@ -476,9 +476,6 @@ namespace DragAndDropSampleManaged
         }
         private async void TcTargetlayout_Drop(object sender, DragEventArgs e)
         {
-            //var droppedProject = await e.DataView.GetDataAsync("Project");
-            //var droppedPara = await e.DataView.GetDataAsync("Paragraph");
-            //var droppedSubPara = await e.DataView.GetDataAsync("SubParagraph");
 
             if (e.DataView.Contains(StandardDataFormats.Text))
             {
@@ -646,7 +643,7 @@ namespace DragAndDropSampleManaged
             _Wpd.Package.Flush();
         }
 
-        private async void CreateDoc(List<Project> projects)
+        private async void CreateDoc(List<TermAndCondition> projects)
         {
             StorageFolder folder = KnownFolders.PicturesLibrary;
             StorageFile sampleFile = await folder.GetFileAsync("hello.docx");
@@ -691,7 +688,7 @@ namespace DragAndDropSampleManaged
             //textEditor.Document.LoadFromStream(Windows.UI.Text.TextSetOptions.FormatRtf, stream2);
             ////textEditor.Document.SetText(Windows.UI.Text.TextSetOptions.FormatRtf, text);
         }
-        public static string OpenextToWordDocument(Stream stream, List<Project> projects)
+        public static string OpenextToWordDocument(Stream stream, List<TermAndCondition> projects)
         {
             var text = string.Empty;
             // Open a WordprocessingDocument for editing using the stream.
@@ -703,6 +700,24 @@ namespace DragAndDropSampleManaged
             {
                 var para = ContractDocCreator.getProjectParagraph(item);
                 body.Append(para);
+                if (item.Children.Count>0)
+                {
+                    foreach (var paraItem in item.Children)
+                    {
+                        var subPara = ContractDocCreator.getProjectParagraph(paraItem);
+                        body.Append(subPara);
+                        if (paraItem.Children.Count > 0)
+                        {
+                            foreach (var subparaItem in paraItem.Children)
+                            {
+                                var childPara = ContractDocCreator.getProjectParagraph(subparaItem);
+                                body.Append(childPara);
+                            }
+                        }
+                    }
+                }
+                
+                
             }
             // Add new text.
             //DocumentFormat.OpenXml.Wordprocessing.Paragraph para = body.AppendChild(new DocumentFormat.OpenXml.Wordprocessing.Paragraph());
@@ -1141,7 +1156,8 @@ double sx2, double sy2, int w2, int h2)
                     }
                 }
                 OrderedProjects.Add(proj);
-            }            
+            }
+            CreateDoc(OrderedProjects);
         }
     }
 }

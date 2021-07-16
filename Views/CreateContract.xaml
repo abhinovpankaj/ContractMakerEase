@@ -258,7 +258,7 @@
                       x:Name="sourceTCs"
                       AllowDrop="False"
                       CanDragItems="True"
-                      CanReorderItems="False"
+                      CanReorderItems="False" ElementSoundMode="Off"
                       ItemInvoked="SourceTCs_ItemInvoked"
                       DragItemsStarting="SourceTCs_DragItemsStarting"
                       ItemTemplateSelector="{StaticResource  NodeTemplateSelector}">
@@ -399,7 +399,7 @@
                 </StackPanel>
                 
             </Border>
-            <Grid Grid.Row="1">
+            <Grid Grid.Row="1" >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
@@ -412,7 +412,7 @@
                 </controls:TextToolbar>
                 
                 <RichEditBox x:Name="textEditor" PlaceholderText="Enter Text Here"  Grid.Row="1"
-                             Background="White" Foreground="Red"/>
+                             Foreground="White" ElementSoundMode="Off"/>
             </Grid>
             
         </Grid>

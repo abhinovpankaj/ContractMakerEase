@@ -14,7 +14,7 @@ namespace DragAndDropSampleManaged
 {
     public class ContractDocCreator
     {
-        private const JustificationValues ParaAlignment= JustificationValues.Distribute;
+        private const JustificationValues ParaAlignment = JustificationValues.Distribute;
 
         private static List<Project> _projects;
         private static bool applyJustification;
@@ -26,7 +26,7 @@ namespace DragAndDropSampleManaged
             {
                 // Create Document
                 using (WordprocessingDocument wordDocument =
-                    WordprocessingDocument.Create(mem, WordprocessingDocumentType.Document,true))
+                    WordprocessingDocument.Create(mem, WordprocessingDocumentType.Document, true))
                 {
                     // Add a main document part. 
                     MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
@@ -40,17 +40,64 @@ namespace DragAndDropSampleManaged
                         var para = getProjectParagraph(item);
                         docBody.Append(para);
                     }
-                    
+
                 }
                 mem.Seek(0, SeekOrigin.Begin);
                 var reader = new StreamReader(mem);
-                str= Encoding.ASCII.GetString(mem.ToArray());
+                str = Encoding.ASCII.GetString(mem.ToArray());
                 str = await reader.ReadToEndAsync();
 
             }
             return str;
         }
 
+        public static Paragraph getProjectParagraph(TermAndCondition pr)
+        {
+            Paragraph p = new Paragraph();
+            if (pr.Type == NodeItemType.SubParagraph )
+            {
+                applyJustification = true;
+            }
+            if (applyJustification)
+            {
+                ParagraphProperties pp = new ParagraphProperties();
+                pp.Justification = new Justification() { Val = ParaAlignment };
+                // Add paragraph properties to your paragraph
+                p.Append(pp);
+            }
+            // Paragraph properties
+            SpacingBetweenLines sblUl = new SpacingBetweenLines() { After = "0" };  // Get rid of space between bullets  
+            Indentation iUl = new Indentation() { Left = "indentation", Hanging = "360" };  // correct indentation  
+            NumberingProperties npUl = new NumberingProperties(
+                new NumberingLevelReference() { Val = 1 },
+                new NumberingId() { Val = 2 }
+            );
+            ParagraphProperties ppUnordered = new ParagraphProperties(npUl, sblUl, iUl);
+            ppUnordered.ParagraphStyleId = new ParagraphStyleId() { Val = "ListParagraph" };
+
+            p.AppendChild(ppUnordered);
+
+            //Project Header
+            Run r2 = new Run();
+            RunProperties rp2 = new RunProperties();
+            rp2.Bold = new Bold();
+            // Always add properties first
+            r2.AppendChild(rp2);
+            Text t2 = new Text(pr.Header) { Space = SpaceProcessingModeValues.Preserve };
+            r2.AppendChild(t2);
+            r2.AppendChild(new Break());
+            //Project Description
+            Run r3 = new Run();
+
+            Text t3 = new Text(pr.Content) { Space = SpaceProcessingModeValues.Preserve };
+            r3.Append(t3);
+
+            //p.ParagraphProperties = new ParagraphProperties(ppUnordered.OuterXml);
+            p.AppendChild(r2);
+            p.AppendChild(r3);
+
+            return p;
+        }
         public static Paragraph getProjectParagraph( Models.Project pr)
         {
             Paragraph p = new Paragraph();
