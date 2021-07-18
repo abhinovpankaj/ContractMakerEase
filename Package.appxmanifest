@@ -1,12 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap mp rescap">
-  <Identity Name="DragAndDropSampleManaged.CS" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" Version="1.0.0.0" />
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap mp rescap">
+  <Identity Name="ContractEase" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" Version="1.0.14.0" />
   <mp:PhoneIdentity PhoneProductId="f840d2ef-1eb3-4c9a-be0a-c8075b469a18" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
-    <DisplayName>DragAndDropSampleManaged C# Sample</DisplayName>
+    <DisplayName>DragAndDropSampleManaged</DisplayName>
     <PublisherDisplayName>WICR</PublisherDisplayName>
-    <Logo>Assets\StoreLogo-sdk.png</Logo>
+    <Logo>media\storelogo-sdk.png</Logo>
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.10240.0" MaxVersionTested="10.0.18362.0" />
@@ -16,19 +15,25 @@
   </Resources>
   <Applications>
     <Application Id="DragAndDropSampleManaged.App" Executable="$targetnametoken$.exe" EntryPoint="DragAndDropSampleManaged.App">
-      <uap:VisualElements DisplayName="DragAndDropSampleManaged C# sample" Square150x150Logo="Assets\squareTile-sdk.png" Square44x44Logo="Assets\SmallTile-sdk.png" Description="DragAndDropSampleManaged C# sample" BackgroundColor="#00b2f0">
+      <uap:VisualElements DisplayName="ContractEase" Square150x150Logo="media\squaretile-sdk.png" Square44x44Logo="media\smalltile-sdk.png" Description="Make contracts with ease on fly." BackgroundColor="#00b2f0">
         <uap:DefaultTile>
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
         <uap:SplashScreen Image="media\splash-sdk.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="portrait" />
+          <uap:Rotation Preference="landscape" />
+          <uap:Rotation Preference="portraitFlipped" />
+          <uap:Rotation Preference="landscapeFlipped" />
+        </uap:InitialRotationPreference>
       </uap:VisualElements>
     </Application>
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
     <uap:Capability Name="picturesLibrary" />
-	<rescap:Capability Name="broadFileSystemAccess" />
+    <rescap:Capability Name="broadFileSystemAccess" />
   </Capabilities>
 </Package>
